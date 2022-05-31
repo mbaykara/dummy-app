@@ -1,5 +1,5 @@
 ```
-go run main
+go run main.go
 ```
 then get user
 ```
