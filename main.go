@@ -6,17 +6,18 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 )
 
 func main() {
 	path := mux.NewRouter().StrictSlash(true)
-
+	v := os.Getenv("VERSION")
 	path.HandleFunc("/", home).Methods(http.MethodGet)
 	path.HandleFunc("/createUser", createUser).Methods(http.MethodPost)
 	path.HandleFunc("/users", getUsers).Methods(http.MethodGet)
-	fmt.Println("Server is running on port 8090")
+	fmt.Printf("Server is running with version %s on port 8090", v)
 	log.Fatal(http.ListenAndServe(":8090", path))
 
 }
