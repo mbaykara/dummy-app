@@ -16,18 +16,29 @@ type User struct {
 var users []User
 
 func main() {
-	http.HandleFunc("/", getHome)
-	http.HandleFunc("/users", getUsersHandler)
-	http.HandleFunc("/createUsers", createUserHandler)
-	http.HandleFunc("/deleteUser", deleteUserHandler)
+	http.HandleFunc("/", logRequest(getHome))
+	http.HandleFunc("/users", logRequest(getUsersHandler))
+	http.HandleFunc("/createUsers", logRequest(createUserHandler))
+	http.HandleFunc("/deleteUser", logRequest(deleteUserHandler))
+
 	log.Println("Server is running...")
 	log.Fatal(http.ListenAndServe(":8090", nil))
 }
-//get home page
-func getUsersHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome to homepage!")
+
+// logRequest is a middleware that logs the API call and then executes the given handler
+func logRequest(handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("API call: %s %s", r.Method, r.URL.Path)
+		handler(w, r)
+	}
 }
-// getUsersHandler handles the GET request for /users endpoint
+
+// getHome handles the GET request for the home page
+func getHome(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Welcome to homepage!"))
+}
+
+// getUsersHandler handles the GET request for the /users endpoint
 func getUsersHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -41,7 +52,7 @@ func getUsersHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonData)
 }
 
-// createUserHandler handles the POST request for /createUsers endpoint
+// createUserHandler handles the POST request for the /createUsers endpoint
 func createUserHandler(w http.ResponseWriter, r *http.Request) {
 	var newUser User
 	err := json.NewDecoder(r.Body).Decode(&newUser)
@@ -57,7 +68,7 @@ func createUserHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("User created successfully"))
 }
 
-// deleteUserHandler handles the DELETE request for /deleteUser endpoint
+// deleteUserHandler handles the DELETE request for the /deleteUser endpoint
 func deleteUserHandler(w http.ResponseWriter, r *http.Request) {
 	username := r.URL.Query().Get("username")
 
