@@ -16,13 +16,17 @@ type User struct {
 var users []User
 
 func main() {
+	http.HandleFunc("/", getHome)
 	http.HandleFunc("/users", getUsersHandler)
 	http.HandleFunc("/createUsers", createUserHandler)
 	http.HandleFunc("/deleteUser", deleteUserHandler)
 	log.Println("Server is running...")
 	log.Fatal(http.ListenAndServe(":8090", nil))
 }
-
+//get home page
+func getUsersHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Welcome to homepage!")
+}
 // getUsersHandler handles the GET request for /users endpoint
 func getUsersHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
