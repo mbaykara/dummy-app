@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -37,9 +38,7 @@ func logRequest(handler http.HandlerFunc) http.HandlerFunc {
 // getHome handles the GET request for the home page
 func getHome(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Welcome to homepage!"))
-	if version, ok := os.LookupEnv("VERSION"); ok {
-		log.Printf("The app version: %s", version)
-	}
+	fmt.Printf("App version: %s\n", os.Getenv("VERSION"))
 }
 
 // getUsersHandler handles the GET request for the /users endpoint
