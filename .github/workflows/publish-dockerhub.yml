@@ -31,7 +31,8 @@ jobs:
         with:
           images: baykara/sample-app
           tags: |
-            type=semver,pattern={{version}}.{{major}}.{{minor}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}.{{patch}}
             type=sha
       
       - name: Build and push Docker image
