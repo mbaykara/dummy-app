@@ -23,7 +23,7 @@ func main() {
 	http.HandleFunc("/createUsers", logRequest(createUserHandler))
 	http.HandleFunc("/deleteUser", logRequest(deleteUserHandler))
 
-	log.Println("Server is running...")
+	log.Printf("Server is running with version %s", os.Getenv("VERSION"))
 	log.Fatal(http.ListenAndServe(":8090", nil))
 }
 
