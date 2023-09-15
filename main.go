@@ -20,7 +20,7 @@ var users []User
 func main() {
 	http.HandleFunc("/", logRequest(getHome))
 	http.HandleFunc("/users", logRequest(getUsersHandler))
-	http.HandleFunc("/createUsers", logRequest(createUserHandler))
+	http.HandleFunc("/createUser", logRequest(createUserHandler))
 	http.HandleFunc("/deleteUser", logRequest(deleteUserHandler))
 
 	log.Printf("Server is running with version %s", os.Getenv("VERSION"))
@@ -38,13 +38,21 @@ func logRequest(handler http.HandlerFunc) http.HandlerFunc {
 // getHome handles the GET request for the home page
 func getHome(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello from %s\n", os.Getenv("REGION"))
-	fmt.Printf("App version: %s\n", os.Getenv("VERSION"))
+}
+
+func connectDB() error {
+	u := os.Getenv("DB_USERNAME")
+	p := os.Getenv("DB_PASSWORD")
+	if u == "" && p == "" {
+		log.Println("Neither DB_USERNAME nor DB_PASSWORD environment variable is set")
+	}
+	return nil
 }
 
 // getUsersHandler handles the GET request for the /users endpoint
 func getUsersHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-
+	connectDB()
 	jsonData, err := json.Marshal(users)
 	if err != nil {
 		http.Error(w, "Failed to retrieve users", http.StatusInternalServerError)
