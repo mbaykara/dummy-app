@@ -14,3 +14,9 @@ Docker image:
 ```bash
 baykara/sample-app:0.1.3
 ```
+Package helm charts
+
+```bash
+helm package sample-app
+helm push sample-app-0.1.3.tgz oci://publicoci.azurecr.io/charts
+```
