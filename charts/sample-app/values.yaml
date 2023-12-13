@@ -11,10 +11,11 @@ image:
   tag: main
 env_map: []
 secretEnv: {} 
-configMapEnv:
-  DB_USERNAME: foo
-  DB_PASSWORD: sssfsfs
-  REGION: south-africa
+  # DB_USERNAME: foo
+  # DB_PASSWORD: sssfsfs
+configMapEnv: {}
+ 
+  # REGION: us-east
     
 imagePullSecrets: []
 nameOverride: ""
@@ -46,7 +47,7 @@ database: {}
   # password: 
 service:
   type: ClusterIP
-  port: 80
+  port: 8090
 
 ingress:
   enabled: false
@@ -75,14 +76,6 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
-
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
 nodeSelector: {}
 
 tolerations: []
