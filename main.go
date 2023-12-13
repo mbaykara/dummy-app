@@ -43,7 +43,7 @@ func connectDB() error {
 	u := os.Getenv("DB_USERNAME")
 	p := os.Getenv("DB_PASSWORD")
 	if u == "" && p == "" {
-		log.Fatalln("Neither DB_USERNAME nor DB_PASSWORD environment variable is set")
+		log.Println("Neither DB_USERNAME nor DB_PASSWORD environment variable is set")
 	}
 	return nil
 }
