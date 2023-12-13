@@ -1,0 +1,12 @@
+{{- if .Values.configMapEnv }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "sample-app.fullname" . }}-configenv
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "sample-app.labels" . | nindent 4 }}
+data:
+{{- range $key, $value := .Values.configMapEnv }}
+{{ $key | indent 2  }}: {{ $value | toString }}
+{{- end }}
+{{- end -}}

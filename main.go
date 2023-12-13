@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -37,7 +36,7 @@ func logRequest(handler http.HandlerFunc) http.HandlerFunc {
 
 // getHome handles the GET request for the home page
 func getHome(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello from %s\n", os.Getenv("REGION"))
+	log.Printf("Hello from %s\n", os.Getenv("REGION"))
 }
 
 func connectDB() error {

@@ -11,8 +11,10 @@ image:
   tag: sha-2e4e7d6
 env_map: []
 secretEnv: {} 
-  # DB_USERNAME: foo
-  # DB_PASSWORD: sssfsfs
+configMapEnv:
+  DB_USERNAME: foo
+  DB_PASSWORD: sssfsfs
+  REGION: south-africa
     
 imagePullSecrets: []
 nameOverride: ""

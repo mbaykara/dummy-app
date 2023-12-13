@@ -38,23 +38,21 @@ spec:
           - name: {{ .name }}
             value: {{ tpl .value $ }}
           {{- end }}
-          {{- if .Values.secretEnv }}
+          {{- if or .Values.secretEnv .Values.configMapEnv  }}
           envFrom:
+           {{- if .Values.secretEnv }}
           - secretRef:
               name: {{ include "sample-app.fullname" . }}-secretenv
+            {{- end }}
+            {{- if .Values.configMapEnv  }}
+          - configMapRef:
+              name: {{ include "sample-app.fullname" . }}-configenv
+              {{- end }}
           {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
