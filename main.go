@@ -43,7 +43,7 @@ func connectDB() error {
 	u := os.Getenv("DB_USERNAME")
 	p := os.Getenv("DB_PASSWORD")
 	if u == "" && p == "" {
-		log.Println("Neither DB_USERNAME nor DB_PASSWORD environment variable is set")
+		log.Fatalln("Neither DB_USERNAME nor DB_PASSWORD environment variable is set")
 	}
 	return nil
 }
@@ -57,8 +57,11 @@ func getUsersHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to retrieve users", http.StatusInternalServerError)
 		return
 	}
-
+	if len(users) < 1 {
+		log.Println("No user exist in the database")
+	}
 	w.WriteHeader(http.StatusOK)
+	log.Printf("Http Status Code: %d\n", http.StatusOK)
 	w.Write(jsonData)
 }
 
