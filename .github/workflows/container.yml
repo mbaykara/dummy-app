@@ -19,7 +19,7 @@ on:
 jobs:
   push_to_registries:
     name: Push Docker image to multiple registries
-    runs-on: alpine
+    runs-on: ubuntu-latest
     permissions:
       packages: write
       contents: read
@@ -58,7 +58,7 @@ jobs:
       - name: Create and publish helm package
         if: ${{ inputs.TFAction == 'create'}}  
         run: | 
-          apk add helm
+          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
           helm package ./charts/${{ github.repository }}
           echo $CR_PAT | helm registry login ghcr.io -u mbaykara --password-stdin
           helm push *.tgz
