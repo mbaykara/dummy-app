@@ -56,7 +56,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: Create and publish helm package
-        if: ${{ inputs.TFAction == 'apply'}}  
+        if: ${{ inputs.TFAction == 'create'}}  
         run: | 
           apk add helm
           helm package ./charts/${{ github.repository }}
