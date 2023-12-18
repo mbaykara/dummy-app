@@ -3,11 +3,20 @@ name: Publish Docker image
 on:
   release:
     types: [published]
-
+  workflow_dispatch:
+    inputs:
+      TFAction:
+        description: 'Push helm package'
+        default: 'apply'
+        type: choice
+        options:
+        - create
+        - donot
+        
 jobs:
   push_to_registries:
     name: Push Docker image to multiple registries
-    runs-on: ubuntu-latest
+    runs-on: alpine
     permissions:
       packages: write
       contents: read
@@ -43,3 +52,10 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+      - name: Create and publish helm package
+        if: ${{ inputs.TFAction == 'apply'}}  
+        run: | 
+          apk add helm
+          helm package ./charts/${{ github.repository }}
+          echo $CR_PAT | helm registry login ghcr.io -u mbaykara --password-stdin
+          helm push *.tgz
