@@ -56,9 +56,9 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: Create and publish helm package
-        if: ${{ inputs.TFAction == 'create'}}  
+       # if: ${{ inputs.TFAction == 'create'}}  
         run: | 
           curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-          helm package ${{ github.repository }}/charts/sample-app/
+          helm package ./charts/sample-app
           echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ghcr.io -u mbaykara --password-stdin
           helm push *.tgz
