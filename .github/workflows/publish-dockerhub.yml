@@ -9,9 +9,28 @@ on:
   pull_request:
     branches:
       - "main"
+      - 
 
 
 jobs:
+  paths-filter:
+    runs-on: alpine
+    outputs:
+      output1: ${{ steps.filter.outputs.charts }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          charts:
+            - 'charts/**'
+
+    - name: workflow tests
+      if: steps.filter.outputs.charts == 'true'
+      run: |
+        apk add helm
+        echo  echo $CR_PAT |helm registry login ghcr.io -u mbaykara --password-stdin 
   push_to_registry:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
