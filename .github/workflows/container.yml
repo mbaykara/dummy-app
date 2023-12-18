@@ -59,6 +59,6 @@ jobs:
         if: ${{ inputs.TFAction == 'create'}}  
         run: | 
           curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-          helm package ${{ github.repository }}/charts/sample-app
+          helm package ${{ github.repository }}/charts/sample-app/
           echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ghcr.io -u mbaykara --password-stdin
           helm push *.tgz
