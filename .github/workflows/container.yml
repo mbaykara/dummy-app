@@ -1,21 +1,9 @@
 name: Publish Docker image
 
 on:
-  # release:
-  #   types: [published]
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-    inputs:
-      TFAction:
-        description: 'Push helm package'
-        default: 'apply'
-        type: choice
-        options:
-        - create
-        - donot
-        
+  release:
+    types: [published]
+
 jobs:
   push_to_registries:
     name: Push Docker image to multiple registries
@@ -55,8 +43,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-      - name: Create and publish helm package
-       # if: ${{ inputs.TFAction == 'create'}}  
+      - name: Create and publish helm package 
         run: | 
           curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
           helm package ./charts/sample-app
