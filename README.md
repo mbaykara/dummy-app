@@ -23,6 +23,7 @@ baykara/sample-app:main
 Package helm charts
 
 ```bash
-helm package sample-app
-helm push sample-app-0.1.5.tgz oci://publicoci.azurecr.io/charts
+export CR_PAT=
+echo $CR_PAT |docker login ghcr.io -u mbaykara --password-stdin #echo $CR_PAT |helm registry login ghcr.io -u mbaykara --password-stdin
+helm push sample-app-1.1.5.tgz oci://ghcr.io/mbaykara/charts/sample-app
 ```
