@@ -60,5 +60,5 @@ jobs:
         run: | 
           curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
           helm package ./charts/${{ github.repository }}
-          echo $CR_PAT | helm registry login ghcr.io -u mbaykara --password-stdin
+          echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ghcr.io -u mbaykara --password-stdin
           helm push *.tgz
