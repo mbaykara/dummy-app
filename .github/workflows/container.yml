@@ -58,7 +58,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: VERSION=${{ steps.extract_semver.outputs.SEMVER_TAG }}
+          build-args: VERSION=${{ steps.extract_semver.outputs.VERSION }}
       - name: Create and publish helm package 
         run: | 
           curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
