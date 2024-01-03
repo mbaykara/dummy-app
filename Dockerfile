@@ -8,6 +8,7 @@ RUN go build -o /usr/local/bin/app
 
 FROM alpine:3.15
 COPY --from=build /usr/local/bin/app /usr/local/bin/app
-ENV VERSION=0.1.8
+
+ENV VERSION=${VERSION}
 CMD ["app"]
 EXPOSE 8090

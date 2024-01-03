@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - 'v*'
+env:
+  VERSION:  ${{  github.ref_name }}
 jobs:
   push_to_registries:
     name: Push Docker image to multiple registries
