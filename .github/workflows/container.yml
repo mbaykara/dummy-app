@@ -5,7 +5,7 @@ on:
     tags:
       - 'v*'
 env:
-  VERSION:  ${{  github.ref_name }}
+  VERSION:  ${{ github.ref_name }}
 jobs:
   push_to_registries:
     name: Push Docker image to multiple registries
@@ -34,6 +34,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
+          VERSION: ${{ github.ref_name }}
           images: |
             baykara/sample-app
             ghcr.io/${{ github.repository }}
