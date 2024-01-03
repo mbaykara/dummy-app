@@ -48,12 +48,12 @@ jobs:
           curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
           helm package ./sample-app
           echo ${{ secrets.CI_TOKEN }} | helm registry login ghcr.io -u mbaykara --password-stdin
-          helm push *.tgz oci://ghcr.io/mbaykara/sample-app
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+          helm push *.tgz oci://ghcr.io/mbaykara/
+  # build:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Release
+  #       uses: softprops/action-gh-release@v1
+  #       if: startsWith(github.ref, 'refs/tags/')
