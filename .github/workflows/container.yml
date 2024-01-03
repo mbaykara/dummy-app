@@ -48,4 +48,4 @@ jobs:
           curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
           helm package ./charts/sample-app
           echo ${{ secrets.CI_TOKEN }} | helm registry login ghcr.io -u mbaykara --password-stdin
-          helm push *.tgz oci://ghcr.io/mbaykara/charts/sample-app
+          helm push *.tgz oci://ghcr.io/mbaykara/charts/
