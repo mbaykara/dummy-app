@@ -1,8 +1,10 @@
 name: Publish Docker image
 
 on:
-  release:
-    types: [published]
+  push:
+    branches: [ main ]
+  # release:
+  #   types: [published]
 
 jobs:
   push_to_registries:
@@ -48,4 +50,4 @@ jobs:
           curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
           helm package ./charts/sample-app
           echo ${{ secrets.CI_TOKEN }} | helm registry login ghcr.io -u mbaykara --password-stdin
-          helm push *.tgz oci://ghcr.io/mbaykara/charts/
+          helm push *.tgz oci://ghcr.io/mbaykara/sample-app/charts/
