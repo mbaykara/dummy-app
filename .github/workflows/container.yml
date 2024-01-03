@@ -19,6 +19,18 @@ jobs:
       - name: Get tag name
         id: extract_tag
         run: echo "Tag name is ${{ github.ref }}"
+        shell: bash
+      
+      - name: Extract SemVer tag
+        id: extract_semver
+        run: |
+          if [[ "${{ github.ref }}" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+            echo "Found SemVer tag: ${BASH_REMATCH[0]}"
+            echo "::set-output name=SEMVER_TAG::${BASH_REMATCH[0]}"
+          else
+            echo "No SemVer tag found."
+          fi
+        shell: bash
         env:
           VERSION: ${{ github.ref }}
       - name: Log in to Docker Hub
@@ -49,7 +61,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: VERSION=${{ github.ref }}
+          build-args: VERSION=${{ steps.extract_semver.outputs.SEMVER_TAG }}
       - name: Create and publish helm package 
         run: | 
           curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
