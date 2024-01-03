@@ -7,7 +7,6 @@ import (
 	"os"
 )
 
-// User represents a user object
 type User struct {
 	ID       int    `json:"id"`
 	Username string `json:"username"`
@@ -26,7 +25,6 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8090", nil))
 }
 
-// logRequest is a middleware that logs the API call and then executes the given handler
 func logRequest(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("API call: %s %s", r.Method, r.URL.Path)
@@ -34,9 +32,16 @@ func logRequest(handler http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-// getHome handles the GET request for the home page
 func getHome(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Hello from %s\n", os.Getenv("REGION"))
+
+	jsonData, err := json.Marshal(os.Getenv("REGION"))
+	if err != nil {
+		http.Error(w, "Failed to retrieve region", http.StatusInternalServerError)
+		return
+	}
+	w.Header()
+	w.Write(append([]byte("Hello From "), jsonData...))
 }
 
 func connectDB() error {
@@ -48,7 +53,6 @@ func connectDB() error {
 	return nil
 }
 
-// getUsersHandler handles the GET request for the /users endpoint
 func getUsersHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	connectDB()
@@ -65,7 +69,6 @@ func getUsersHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonData)
 }
 
-// createUserHandler handles the POST request for the /createUsers endpoint
 func createUserHandler(w http.ResponseWriter, r *http.Request) {
 	var newUser User
 	err := json.NewDecoder(r.Body).Decode(&newUser)
@@ -81,17 +84,14 @@ func createUserHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("User created successfully"))
 }
 
-// deleteUserHandler handles the DELETE request for the /deleteUser endpoint
 func deleteUserHandler(w http.ResponseWriter, r *http.Request) {
 	username := r.URL.Query().Get("username")
 
 	if username == "" {
-		// Remove the last user if no username is provided
 		if len(users) > 0 {
 			users = users[:len(users)-1]
 		}
 	} else {
-		// Find and remove the user by username
 		for i, user := range users {
 			if user.Username == username {
 				users = append(users[:i], users[i+1:]...)
