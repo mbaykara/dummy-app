@@ -26,8 +26,7 @@ jobs:
         run: |
           if [[ "${{ github.ref }}" =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
             echo "Found SemVer tag: ${BASH_REMATCH[0]}"
-            echo "::set-output name=SEMVER_TAG::${BASH_REMATCH[0]}"
-            echo $SEMVER_TAG
+            echo "{SEMVER_TAG}={BASH_REMATCH[0]}" >> $GITHUB_OUTPUT
           else
             echo "No SemVer tag found."
           fi
