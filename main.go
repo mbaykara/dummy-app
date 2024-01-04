@@ -42,6 +42,7 @@ func getHome(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header()
 	w.Write(append([]byte("Hello From "), jsonData...))
+	w.Write(append([]byte("\n")))
 }
 
 func connectDB() error {
