@@ -27,7 +27,7 @@ func main() {
 
 func logRequest(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("API call: %s %s", r.Method, r.URL.Path)
+		log.Printf("API Method: %s Endpoint: %s", r.Method, r.URL.Path)
 		handler(w, r)
 	}
 }
