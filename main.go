@@ -49,7 +49,9 @@ func connectDB() error {
 	u := os.Getenv("DB_USERNAME")
 	p := os.Getenv("DB_PASSWORD")
 	if u == "" && p == "" {
-		log.Println("Neither DB_USERNAME nor DB_PASSWORD environment variable is set")
+		log.Fatalln("No Database credentials found!")
+	} else {
+		log.Println("Database connection is successful")
 	}
 	return nil
 }
@@ -72,6 +74,7 @@ func getUsersHandler(w http.ResponseWriter, r *http.Request) {
 
 func createUserHandler(w http.ResponseWriter, r *http.Request) {
 	var newUser User
+	connectDB()
 	err := json.NewDecoder(r.Body).Decode(&newUser)
 	if err != nil {
 		http.Error(w, "Invalid user data", http.StatusBadRequest)
