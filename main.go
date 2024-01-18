@@ -51,7 +51,7 @@ func connectDB() error {
 	if u == "" && p == "" {
 		log.Fatalln("No Database credentials found!")
 	} else {
-		log.Println("Database connection is successful")
+		log.Println("Database connected successfully")
 	}
 	return nil
 }
