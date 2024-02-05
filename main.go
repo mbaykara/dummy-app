@@ -65,7 +65,7 @@ func getUsersHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if len(users) < 1 {
-		log.Println("No user exist in the database")
+		log.Println("Database is empty!")
 	}
 	w.WriteHeader(http.StatusOK)
 	log.Printf("Http Status Code: %d\n", http.StatusOK)
