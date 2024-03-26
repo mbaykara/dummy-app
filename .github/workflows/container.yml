@@ -2,8 +2,11 @@ name: Publish Docker image
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*'
+    
 env:
   VERSION:  ${{ github.ref_name }}
 jobs:
@@ -20,7 +23,13 @@ jobs:
         id: extract_tag
         run: echo "Tag name is ${{ github.ref }}"
         shell: bash
-      
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.3.0
+        with:
+          cosign-release: 'v2.2.2'
+      - name: Check install!
+        run: cosign version
+        
       - name: SemVer Tag
         id: extract_semver
         run: |
@@ -41,7 +50,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }} 
       
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -59,6 +68,16 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: VERSION=${{ env.VERSION }}
+      - name: Sign the images with GitHub OIDC Token
+        env:
+          DIGEST: ${{ steps.build-and-push.outputs.digest }}
+          TAGS: ${{ steps.docker_meta.outputs.tags }}
+        run: |
+          images=""
+          for tag in ${TAGS}; do
+            images+="${tag}@${DIGEST} "
+          done
+          cosign sign --yes ${images}
       - name: Create and publish helm package 
         run: | 
           curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
