@@ -73,7 +73,7 @@ jobs:
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
           TAGS: ${{ steps.docker_meta.outputs.tags }}
         run: |
-          images=""
+          images="ghcr.io/${{ github.repository }}"
           for tag in ${TAGS}; do
             images+="${tag}@${DIGEST} "
           done
