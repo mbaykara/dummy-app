@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -21,7 +22,12 @@ func main() {
 	http.HandleFunc("/createUser", logRequest(createUserHandler))
 	http.HandleFunc("/deleteUser", logRequest(deleteUserHandler))
 
-	log.Printf("Server is running with version %s", os.Getenv("VERSION"))
+	version := os.Getenv("VERSION")
+	if version == "" {
+		log.Println("VERSION environment variable not set")
+		version = "unknown"
+	}
+	log.Printf("Server is running with version %s", version)
 	log.Fatal(http.ListenAndServe(":8090", nil))
 }
 
@@ -33,39 +39,52 @@ func logRequest(handler http.HandlerFunc) http.HandlerFunc {
 }
 
 func getHome(w http.ResponseWriter, r *http.Request) {
-	log.Printf("Hello from %s\n", os.Getenv("REGION"))
+	region := os.Getenv("REGION")
+	if region == "" {
+		log.Println("REGION environment variable not set")
+		region = "unknown"
+	}
 
-	jsonData, err := json.Marshal(os.Getenv("REGION"))
+	log.Printf("Hello from %s\n", region)
+
+	jsonData, err := json.Marshal(region)
 	if err != nil {
 		http.Error(w, "Failed to retrieve region", http.StatusInternalServerError)
 		return
 	}
-	w.Header()
 	w.Write(append([]byte("Hello From "), jsonData...))
-	w.Write(append([]byte("\n")))
+	w.Write([]byte("\n"))
 }
 
 func connectDB() error {
 	u := os.Getenv("DB_USERNAME")
 	p := os.Getenv("DB_PASSWORD")
-	if u == "" && p == "" {
-		log.Fatalln("No Database credentials found!")
-	} else {
-		log.Println("Database connected successfully")
+	if u == "" || p == "" {
+		return logError("No Database credentials found!")
 	}
+	log.Println("Database connected successfully")
 	return nil
+}
+
+func logError(message string) error {
+	log.Println(message)
+	return fmt.Errorf(message)
 }
 
 func getUsersHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	connectDB()
+	if err := connectDB(); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	jsonData, err := json.Marshal(users)
 	if err != nil {
 		http.Error(w, "Failed to retrieve users", http.StatusInternalServerError)
 		return
 	}
 	if len(users) < 1 {
-		log.Println("Database is empty!")
+		log.Println("No users found in the database!")
 	}
 	w.WriteHeader(http.StatusOK)
 	log.Printf("Http Status Code: %d\n", http.StatusOK)
@@ -74,7 +93,11 @@ func getUsersHandler(w http.ResponseWriter, r *http.Request) {
 
 func createUserHandler(w http.ResponseWriter, r *http.Request) {
 	var newUser User
-	connectDB()
+	if err := connectDB(); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	err := json.NewDecoder(r.Body).Decode(&newUser)
 	if err != nil {
 		http.Error(w, "Invalid user data", http.StatusBadRequest)
